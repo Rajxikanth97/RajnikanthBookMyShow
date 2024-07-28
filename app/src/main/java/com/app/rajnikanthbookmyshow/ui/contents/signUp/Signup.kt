@@ -28,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.app.rajnikanthbookmyshow.R
+import com.app.rajnikanthbookmyshow.ui.appUtils.AppUtils
 import com.app.rajnikanthbookmyshow.ui.localDatabase.LocalDatabase
 import com.app.rajnikanthbookmyshow.ui.theme.RajnikanthBookMyShowTheme
 import com.app.rajnikanthbookmyshow.ui.theme.blue
@@ -45,7 +46,7 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
 
 
     var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    var emailId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var scroller by remember { mutableStateOf(false) }
@@ -60,6 +61,29 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
         lineTo(width, height)
         lineTo(0f, height)
         close()
+    }
+
+    fun onClick() {
+        if (!AppUtils.nullDataCheck(name.toString().trim())) {
+            AppUtils.showMessageClick("Please enter name.",context)
+        }else if (!AppUtils.nullDataCheck(emailId.toString().trim())) {
+            AppUtils.showMessageClick("Please enter email id.",context)
+        }else if (!AppUtils.emilValidationCheck(emailId.trim())) {
+            AppUtils.showMessageClick("Please enter valid email id.",context)
+        }else if (!AppUtils.nullDataCheck(password.toString().trim())) {
+            AppUtils.showMessageClick("Please enter password.",context)
+        }else if (!AppUtils.nullDataCheck(confirmPassword.toString().trim())) {
+            AppUtils.showMessageClick("Please enter confirm password.",context)
+        }else if (confirmPassword.toString().trim() != password.toString().trim()) {
+            AppUtils.showMessageClick("Confirm password should be same as password.",context)
+        }else {
+            localDatabase.handle = true
+            navController.navigate("Home") {
+                popUpTo("Signup") {
+                    inclusive = true
+                }
+            }
+        }
     }
     RajnikanthBookMyShowTheme {
         Scaffold {
@@ -141,8 +165,8 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             TextField(
-                                value = email,
-                                onValueChange = { email = it },
+                                value = emailId,
+                                onValueChange = { emailId = it },
                                 label = { Text("Enter email id") },
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -236,7 +260,7 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                                 contentPadding = PaddingValues(),
                                 shape = RoundedCornerShape(10.dp),
                                 onClick = {
-
+                                    onClick()
                                 },
                             ) {
                                 Box(

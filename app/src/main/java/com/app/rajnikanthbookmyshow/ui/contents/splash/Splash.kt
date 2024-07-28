@@ -30,7 +30,7 @@ fun Splash(navController: NavController,localDatabase: LocalDatabase) {
     LaunchedEffect(Unit) {
         delay(3.seconds)
         if(localDatabase.handle) {
-            navController.navigate("SignIn") {
+            navController.navigate("Home") {
                 popUpTo("Splash") {
                     inclusive = true
                 }

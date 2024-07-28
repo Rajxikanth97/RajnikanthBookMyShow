@@ -29,6 +29,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import com.app.rajnikanthbookmyshow.R
+import com.app.rajnikanthbookmyshow.ui.appUtils.AppUtils
 import com.app.rajnikanthbookmyshow.ui.localDatabase.LocalDatabase
 import com.app.rajnikanthbookmyshow.ui.theme.RajnikanthBookMyShowTheme
 import com.app.rajnikanthbookmyshow.ui.theme.blue
@@ -55,6 +56,23 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
         lineTo(width, height)
         lineTo(0f, height)
         close()
+    }
+
+    fun onClick() {
+        if (!AppUtils.nullDataCheck(emailId.toString().trim())) {
+            AppUtils.showMessageClick("Please enter email id.",context)
+        }else if (!AppUtils.emilValidationCheck(emailId.trim())) {
+            AppUtils.showMessageClick("Please enter valid email id.",context)
+        }else if (!AppUtils.nullDataCheck(password.toString().trim())) {
+            AppUtils.showMessageClick("Please enter password.",context)
+        }else {
+            localDatabase.handle = true
+            navController.navigate("Home") {
+                popUpTo("SignIn") {
+                    inclusive = true
+                }
+            }
+        }
     }
     RajnikanthBookMyShowTheme {
         Scaffold {
@@ -170,7 +188,7 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
                                 contentPadding = PaddingValues(),
                                 shape = RoundedCornerShape(10.dp),
                                 onClick = {
-
+                                    onClick()
                                 },
                             ) {
                                 Box(
