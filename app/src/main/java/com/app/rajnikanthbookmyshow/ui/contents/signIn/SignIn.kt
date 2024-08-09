@@ -1,6 +1,8 @@
 package com.app.rajnikanthbookmyshow.ui.contents.signIn
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
@@ -19,7 +21,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -33,8 +34,9 @@ import com.app.rajnikanthbookmyshow.ui.appUtils.AppUtils
 import com.app.rajnikanthbookmyshow.ui.localDatabase.LocalDatabase
 import com.app.rajnikanthbookmyshow.ui.theme.RajnikanthBookMyShowTheme
 import com.app.rajnikanthbookmyshow.ui.theme.blue
-import com.app.rajnikanthbookmyshow.ui.theme.darkGrey
 import com.app.rajnikanthbookmyshow.ui.theme.white
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
@@ -46,7 +48,7 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
     var emailId by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var scroller by remember { mutableStateOf(false) }
-
+    val firebase = FirebaseAuth.getInstance()
     val customBottomShape = GenericShape { size, _ ->
         val width = size.width
         val height = size.height
@@ -59,19 +61,36 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
     }
 
     fun onClick() {
-        if (!AppUtils.nullDataCheck(emailId.toString().trim())) {
+        if (AppUtils.nullDataCheck(emailId.toString().trim())) {
             AppUtils.showMessageClick("Please enter email id.",context)
         }else if (!AppUtils.emilValidationCheck(emailId.trim())) {
             AppUtils.showMessageClick("Please enter valid email id.",context)
-        }else if (!AppUtils.nullDataCheck(password.toString().trim())) {
+        }else if (AppUtils.nullDataCheck(password.toString().trim())) {
             AppUtils.showMessageClick("Please enter password.",context)
         }else {
-            localDatabase.handle = true
-            navController.navigate("Home") {
-                popUpTo("SignIn") {
-                    inclusive = true
+            scroller = true
+            firebase.signInWithEmailAndPassword(emailId.lowercase(), password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(
+                            context, "User Signed In Successfully.", Toast.LENGTH_SHORT
+                        ).show()
+                        localDatabase.handle = true
+                        navController.navigate("Home") {
+                            popUpTo("SignIn") {
+                                inclusive = true
+                            }
+                        }
+
+                        scroller = false
+
+                    } else {
+                        Toast.makeText(
+                            context, task.exception?.message.toString(), Toast.LENGTH_SHORT
+                        ).show()
+                        scroller = false
+                    }
                 }
-            }
         }
     }
     RajnikanthBookMyShowTheme {
@@ -118,7 +137,9 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Email Id",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -148,7 +169,9 @@ fun SignIn(navController: NavController, localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Password",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))

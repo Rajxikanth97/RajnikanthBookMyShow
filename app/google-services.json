@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336690154330",
+    "project_id": "book-my-show-7a2e2",
+    "storage_bucket": "book-my-show-7a2e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336690154330:android:e25b6b87bb158843684163",
+        "android_client_info": {
+          "package_name": "com.app.rajnikanthbookmyshow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8VTkmNmeMGy9cpDVXHuxRNsu73qFveCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

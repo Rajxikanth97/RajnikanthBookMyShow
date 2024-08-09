@@ -16,12 +16,14 @@ import com.app.rajnikanthbookmyshow.ui.contents.signIn.SignIn
 import com.app.rajnikanthbookmyshow.ui.contents.signUp.Signup
 import com.app.rajnikanthbookmyshow.ui.contents.splash.Splash
 import com.app.rajnikanthbookmyshow.ui.localDatabase.LocalDatabase
+import com.google.firebase.FirebaseApp
 
 @Composable
 fun SwitchScreen() {
     val context = LocalContext.current
     val navController = rememberNavController()
     val localDatabase = LocalDatabase(context)
+
     NavHost(
         navController = navController,
         startDestination = "Splash"

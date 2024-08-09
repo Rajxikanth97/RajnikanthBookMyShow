@@ -1,6 +1,7 @@
 package com.app.rajnikanthbookmyshow.ui.contents.signUp
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.GenericShape
@@ -33,16 +34,16 @@ import com.app.rajnikanthbookmyshow.ui.localDatabase.LocalDatabase
 import com.app.rajnikanthbookmyshow.ui.theme.RajnikanthBookMyShowTheme
 import com.app.rajnikanthbookmyshow.ui.theme.blue
 import com.app.rajnikanthbookmyshow.ui.theme.white
+import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Signup(navController: NavController,localDatabase: LocalDatabase) {
+fun Signup(navController: NavController, localDatabase: LocalDatabase) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
-
 
 
     var name by remember { mutableStateOf("") }
@@ -50,7 +51,7 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var scroller by remember { mutableStateOf(false) }
-
+    val firebase = FirebaseAuth.getInstance()
 
     val customBottomShape = GenericShape { size, _ ->
         val width = size.width
@@ -64,25 +65,47 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
     }
 
     fun onClick() {
-        if (!AppUtils.nullDataCheck(name.toString().trim())) {
-            AppUtils.showMessageClick("Please enter name.",context)
-        }else if (!AppUtils.nullDataCheck(emailId.toString().trim())) {
-            AppUtils.showMessageClick("Please enter email id.",context)
-        }else if (!AppUtils.emilValidationCheck(emailId.trim())) {
-            AppUtils.showMessageClick("Please enter valid email id.",context)
-        }else if (!AppUtils.nullDataCheck(password.toString().trim())) {
-            AppUtils.showMessageClick("Please enter password.",context)
-        }else if (!AppUtils.nullDataCheck(confirmPassword.toString().trim())) {
-            AppUtils.showMessageClick("Please enter confirm password.",context)
-        }else if (confirmPassword.toString().trim() != password.toString().trim()) {
-            AppUtils.showMessageClick("Confirm password should be same as password.",context)
-        }else {
-            localDatabase.handle = true
-            navController.navigate("Home") {
-                popUpTo("Signup") {
-                    inclusive = true
+        if (AppUtils.nullDataCheck(name.toString().trim())) {
+            AppUtils.showMessageClick("Please enter name.", context)
+        } else if (AppUtils.nullDataCheck(emailId.toString().trim())) {
+            AppUtils.showMessageClick("Please enter email id.", context)
+        } else if (!AppUtils.emilValidationCheck(emailId.trim())) {
+            AppUtils.showMessageClick("Please enter valid email id.", context)
+        } else if (AppUtils.nullDataCheck(password.toString().trim())) {
+            AppUtils.showMessageClick("Please enter password.", context)
+        } else if (AppUtils.nullDataCheck(confirmPassword.toString().trim())) {
+            AppUtils.showMessageClick("Please enter confirm password.", context)
+        } else if (confirmPassword.toString().trim() != password.toString().trim()) {
+            AppUtils.showMessageClick("Confirm password should be same as password.", context)
+        } else {
+            scroller = true
+            firebase.createUserWithEmailAndPassword(
+                emailId.lowercase(),
+                password
+            )
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(
+                            context,
+                            "User Signed Up Successfully.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        localDatabase.handle = true
+                        navController.navigate("Home") {
+                            popUpTo("Signup") {
+                                inclusive = true
+                            }
+                        }
+                        scroller = false
+                    } else {
+                        Toast.makeText(
+                            context,
+                            task.exception?.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        scroller = false
+                    }
                 }
-            }
         }
     }
     RajnikanthBookMyShowTheme {
@@ -131,7 +154,9 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Name",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -160,7 +185,9 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Email Id",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -190,7 +217,9 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Password",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -220,7 +249,9 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Text(
                                 "Confirm Password",
-                                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 10.dp, end = 10.dp),
                                 style = TextStyle(color = white)
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -251,8 +282,7 @@ fun Signup(navController: NavController,localDatabase: LocalDatabase) {
                             Button(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 10.dp, end = 10.dp)
-                                ,
+                                    .padding(start = 10.dp, end = 10.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Transparent,
                                     contentColor = blue
