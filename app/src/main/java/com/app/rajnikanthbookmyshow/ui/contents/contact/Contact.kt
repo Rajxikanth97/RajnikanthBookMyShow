@@ -27,7 +27,6 @@ import com.app.rajnikanthbookmyshow.ui.theme.white
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Contact(navController: NavController) {
-    val context = LocalContext.current
     var webView: WebView? = null
     RajnikanthBookMyShowTheme {
         Scaffold {

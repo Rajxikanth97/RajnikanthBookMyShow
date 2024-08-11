@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -116,6 +119,34 @@ fun Signup(navController: NavController, localDatabase: LocalDatabase) {
                     .verticalScroll(scrollState)
                     .background(blue)
             ) {
+                SmallTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.app_name), color = Color.White,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            style = TextStyle(fontWeight = FontWeight.Medium, fontSize = 18.sp)
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBack,
+                                tint = Color.White,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = blue,
+                        titleContentColor = Color.White
+                    )
+                )
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
