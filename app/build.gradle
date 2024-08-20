@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace 'com.app.rajnikanthbookmyshow'
+    namespace 'com.W9642912.rajnikanthbookmyshow'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.app.rajnikanthbookmyshow"
+        applicationId "com.W9642912.rajnikanthbookmyshow"
         minSdk 24
         targetSdk 33
         versionCode 1

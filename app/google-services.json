@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:336690154330:android:e25b6b87bb158843684163",
+        "mobilesdk_app_id": "1:336690154330:android:61d15ff7ae669330684163",
         "android_client_info": {
-          "package_name": "com.app.rajnikanthbookmyshow"
+          "package_name": "com.W9642912.rajnikanthbookmyshow"
         }
       },
       "oauth_client": [],
